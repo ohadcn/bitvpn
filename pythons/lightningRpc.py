@@ -25,6 +25,8 @@ class lightningRpcApi:
 
     def make_rpc_request(self, url, auth, method, data):
         json = {
+            'jsonrpc': '2.0',
+            'id': 1,
             'method': method,
             'params':data
         }
@@ -33,7 +35,7 @@ class lightningRpcApi:
 
     def get_payment_request(self, sum, desc = "just pay!"):
         id = str(rand_data())
-        resp = self.make_rpc_request(self.spark, self.spark_auth, "invoice", [sum, id, desc])
+        resp = self.make_rpc_request(self.clightning, self.clightning_auth, "invoice", [sum, id, desc])
         data = decode(resp.text)
         data.update({
             'id': id,
@@ -43,7 +45,7 @@ class lightningRpcApi:
 
 
     def pay(self, req_content):
-        resp = self.make_rpc_request(self.spark, self.spark_auth, "pay", [req_content])
+        resp = self.make_rpc_request(self.clightning, self.clightning_auth, "pay", [req_content])
         return resp.text
 
 

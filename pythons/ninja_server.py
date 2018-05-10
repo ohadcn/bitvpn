@@ -54,13 +54,13 @@ def update_ninja_server(address):
 
 @app.route("/generateNewClient/<string:rand>")
 def generateNewClient(rand):
-    return popen("~/cgi-bin/generateNewClient.sh " + rand).read()
+    return popen("./cgi-bin/generateNewClient.sh " + rand).read()
 
 
 @app.route("/should_pay/<string:addr>")
 def should_pay(addr):
     s = ""
-    if addr in clients_payments:
+    if addr in clients_payments and clients_payments[addr] > 0:
         topay = int(clients_payments[addr])
         s = wallet.get_payment_request(topay)['content']
         clients_payments_hitory[addr] += topay
@@ -72,4 +72,4 @@ def should_pay(addr):
 Thread(target=update_payments_status,args=(config["netninja"]["ovpn_status_files"],1,)).start()
 Thread(target=update_ninja_server,args=(config["netninja"]["server"] + "/register/" + config["netninja"]["my_addr"],)).start()
 
-app.run()
+app.run(host= '0.0.0.0')
