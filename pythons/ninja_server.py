@@ -1,6 +1,6 @@
 from lightningRpc import lightningRpcApi as remote_wallet
 from optparse import OptionParser
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from json import loads as decode, dumps as encode
 from os import popen
 from threading import Thread
@@ -61,12 +61,26 @@ def generateNewClient(rand):
 def should_pay(addr):
     s = ""
     if addr in clients_payments and clients_payments[addr] > 0:
-        topay = int(clients_payments[addr])
+        topay = int(clients_payments[addr]) - int(clients_payments_hitory[addr])
         s = wallet.get_payment_request(topay)['content']
         clients_payments_hitory[addr] += topay
         clients_payments[addr] = 0
         print("sent payment request of " + str(topay) + " to client " + addr)
     return s
+
+
+@app.route('/nodejs/<string:rand>', methods=['GET', 'POST'])
+def nodejs(rand):
+    uuid = rand.read()
+    #content = request.get_json(silent=True)
+    #print content
+
+    content = request.json
+    print(content['nodejs'])
+
+    print(uuid)
+
+    return uuid
 
 
 Thread(target=update_payments_status,args=(config["netninja"]["ovpn_status_files"],1,)).start()
