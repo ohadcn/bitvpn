@@ -16,8 +16,11 @@ def constantly_pay(wallet, server_addr, myid):
     print(addr)
     while True:
         try:
-            req = get(addr).text
-            print(req)
+            res = get(addr)
+            if res.status_code != 200:
+                print("error: " + str(res.status_code) + res.text)
+                break
+            req = res.text
             if req and len(req) > 10:
                 print(wallet.pay(req))
         except Exception as e:
