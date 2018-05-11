@@ -1,4 +1,5 @@
 # Script to be run under netninja user
+echo "Please note, Amazon user must have the following permitions: AmazonEC2FullAccess, CloudWatchFullAccess, AmazonEC2ContainerServiceFullAccess"
 cd ~
 mkdir -p ~/.ssh
 chmod 0700 ~/.ssh
