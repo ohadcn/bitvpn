@@ -2,7 +2,7 @@ from lightningRpc import lightningRpcApi as remote_wallet
 from optparse import OptionParser
 from flask import Flask, request
 from json import loads as decode, dumps as encode
-from os import popen
+from os import popen, unlink as delete
 from threading import Thread
 from time import sleep
 from requests import get
@@ -39,6 +39,8 @@ def update_payments_status(log_file, ppb):
                     clients_payments[addr] = 0
                 if not addr in clients_payments_hitory:
                     clients_payments_hitory[addr] = 0
+                if clients_payments[addr] > 0:
+                    delete(config["netninja"]["ovpn_clients_dir"] + addr + ".key")
                 clients_payments[addr] += byte_count * ppb
         except Exception as e:
             print(str(e))
@@ -62,7 +64,7 @@ def should_pay(addr):
     s = ""
     if addr in clients_payments and clients_payments[addr] > 0:
         topay = int(clients_payments[addr])
-        s = wallet.get_payment_request(topay)['content']
+        s = wallet.get_payment_request(topay, addr)['content']
         clients_payments_hitory[addr] += topay
         clients_payments[addr] = 0
         print("sent payment request of " + str(topay) + " to client " + addr)
