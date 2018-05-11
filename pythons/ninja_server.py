@@ -63,7 +63,7 @@ def generateNewClient(rand):
 def should_pay(addr):
     s = ""
     if addr in clients_payments and clients_payments[addr] > 0:
-        topay = int(clients_payments[addr])
+        topay = int(clients_payments[addr]) - int(clients_payments_hitory[addr])
         s = wallet.get_payment_request(topay, addr)['content']
         clients_payments_hitory[addr] += topay
         clients_payments[addr] = 0
