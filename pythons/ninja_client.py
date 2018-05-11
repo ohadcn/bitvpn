@@ -31,15 +31,18 @@ def constantly_pay(wallet, server_addr, myid):
 parser = OptionParser()
 parser.add_option("-c", "--config", dest="config_file",
                   help="config file to use", metavar="FILE", default="client_config.ini")
+parser.add_option("-s", "--server", dest="server",
+                  help="server to use",  default=None)
 (options, args) = parser.parse_args()
 
 config = ConfigParser()
 config.read(options.config_file)
 
 wallet = remote_wallet(config["wallet"])
-
-servers = decode(get(config['netninja']['server'] + "/get_servers/2").text)
 ovpn_conf = None
+if options.server:
+    ovpn_conf = get(options.server).text
+servers = decode(get(config['netninja']['server'] + "/get_servers/2").text)
 while not ovpn_conf:
     for server in servers:
         base_addr = "http://" + server
@@ -50,12 +53,12 @@ while not ovpn_conf:
             resp = get(addr)
             if resp.status_code != 200:
                 continue
-            if len(resp.text) > 1000:
+            if len(resp.text) > 1000 and resp.text.startswith("client"):
                 ovpn_conf = resp.text
-            else:
-                addr = base_addr + "/download/" + myid + ".ovpn"
-                ovpn_conf = get(addr).text
-            break
+            # else:
+            #     addr = base_addr + "/download/" + myid + ".ovpn"
+            #     ovpn_conf = get(addr).text
+            # break
         except:
             print("failed to get " + addr)
 open("config.ovpn", "wt").write(ovpn_conf)
