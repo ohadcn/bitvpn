@@ -26,8 +26,9 @@ wallet = remote_wallet(config["wallet"])
 
 app = Flask(__name__)
 
+is_running = True
 def update_payments_status(log_file, ppb):
-    while True:
+    while is_running:
         try:
             text = open(log_file, "rt").read()
             text = text[text.index("Since\n") + 6:text.index("\nROUTING")].split("\n")
@@ -47,7 +48,7 @@ def update_payments_status(log_file, ppb):
         sleep(20)
 
 def update_ninja_server(address):
-    while True:
+    while is_running:
         try:
             get(address)
         except:
@@ -75,3 +76,4 @@ Thread(target=update_payments_status,args=(config["netninja"]["ovpn_status_files
 Thread(target=update_ninja_server,args=(config["netninja"]["server"] + "/register/" + config["netninja"]["my_addr"],)).start()
 
 app.run(host= '0.0.0.0')
+is_running = False

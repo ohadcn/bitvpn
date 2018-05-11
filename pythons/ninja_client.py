@@ -11,10 +11,11 @@ try:
 except:
     from configparser import ConfigParser
 
+is_running = True
 def constantly_pay(wallet, server_addr, myid):
     addr = server_addr + "/should_pay/" + myid
     print(addr)
-    while True:
+    while is_running:
         try:
             res = get(addr)
             if res.status_code != 200:
@@ -61,4 +62,5 @@ open("config.ovpn", "wt").write(ovpn_conf)
 Thread(target=constantly_pay,args=(wallet,base_addr,myid,)).start()
 print("connecting")
 system('\"' + config['netninja']['ovpn_bin'] + "\" --config config.ovpn")
+is_running = False
 exit(0)
