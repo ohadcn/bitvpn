@@ -2,7 +2,7 @@ EASYRSAURL='https://github.com/OpenVPN/easy-rsa/releases/download/v3.0.4/EasyRSA
 wget -O ~/easyrsa.tgz "$EASYRSAURL" 2>/dev/null || curl -Lo ~/easyrsa.tgz "$EASYRSAURL"
 tar xzf ~/easyrsa.tgz -C ~/
 rm -rf ~/easyrsa.tgz
-mv ~/EasyRSA-3.0.4/ /etc/openvpn/
+mv -r ~/EasyRSA-3.0.4/ /etc/openvpn/
 mkdir -p /etc/openvpn/easy-rsa/pki
 mv /etc/openvpn/EasyRSA-3.0.4/ /etc/openvpn/easy-rsa/ #TODO why 2 mv?
 chown -R root:root /etc/openvpn/easy-rsa/
