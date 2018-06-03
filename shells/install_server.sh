@@ -14,6 +14,7 @@ sudo service openvpn restart
 
 # add to crontab
 echo '@reboot cd /home/ubuntu/bitvpn/pythons && python3 ninja_server.py' > /tmp/cron
+echo '@reboot cd /home/ubuntu/bitvpn/sheels && iptables.sh' > /tmp/cron
 sudo crontab -l -u root | cat - /tmp/cron | sudo crontab -u root -
 #TODO check server at 5000 [no / request[]
 CCIPADDRESS=$(curl http://169.254.169.254/latest/meta-data/public-ipv4)
